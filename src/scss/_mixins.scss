@@ -11,4 +11,18 @@
   text-transform: uppercase;
   font-size: 18px;
   font-weight: bold;
+  cursor: pointer;
+
+  transition: box-shadow 1s;
+
+  &:hover {
+    box-shadow: 10px 5px 5px #eee;    
+  }
+}
+
+@mixin counter-btn {
+  background-color: inherit;
+  border: none;
+  width: 30px;
+  text-align: center;
 }

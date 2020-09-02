@@ -32,10 +32,22 @@
 
 .counter__period {
   margin: 10px;
+  display: flex;
+  width: 200px;
+  justify-content: space-between;
+}
+
+.counter__list {
+  padding: 0;
+  list-style-type: none;
 }
 
 .counter__item {
   margin-top: 10px;
+
+  & button {
+    @include counter-btn();
+  }
 }
 
 .button {
