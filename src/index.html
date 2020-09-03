@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <title>Breathe Timer</title>
   </head>
   <body>
@@ -14,39 +18,15 @@
           </div>
         </header>
         <div class="main">
-          <div class="main__dashboard"></div>
-
-          <div id="counter">
-            <!-- <div class="counter__period">11:00</div>
-            <div class="counter__list">
-              <div class="counter__item">
-                <span>Inhale</span>
-                <button class="minus">-</button>
-                <span data-type="countNum">7</span>
-                <button class="plus">+</button>
-              </div>
-              <div class="counter__item">
-                <span>retain</span>
-                <button class="minus">-</button>
-                <span data-type="countNum">8</span>
-                <button class="plus">+</button>
-              </div>
-              <div class="counter__item">
-                <span>exhale</span>
-                <button class="minus">-</button>
-                <span data-type="countNum">0</span>
-                <button class="plus">+</button>
-              </div>
-              <div class="counter__item">
-                <span>sustain</span>
-                <button class="minus">-</button>
-                <span data-type="countNum">8</span>
-                <button class="plus">+</button>
-              </div>
-            </div> -->
+          <div id="dashboard" class="dashboard">
+            <div id="circle" class="dashboard__circle">
+              <div id="indicator" class="dashboard__indicator"></div>
+            </div>
           </div>
 
-          <div id="start" class="button">Start</div>
+          <div id="counter"></div>
+
+          <button id="button"></button>
         </div>
       </div>
     </div>
