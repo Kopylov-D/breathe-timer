@@ -39,7 +39,7 @@ export class Counter {
     this.state = {
       timer: options.timer,
       preset: options.preset,
-      circleTime: 4,
+      circleTime: 27,
       isRunning: false
     };
 

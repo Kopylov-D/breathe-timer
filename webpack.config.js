@@ -111,6 +111,11 @@ module.exports = {
         use: jsLoaders(),
       },
       {
+        test: /\.mp3$/,
+        // include: SRC,
+        loader: 'file-loader',
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: {

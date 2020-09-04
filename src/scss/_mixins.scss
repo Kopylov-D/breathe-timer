@@ -1,5 +1,4 @@
 @mixin button($color: red) {
-
   padding: 0;
   border: none;
   font: inherit;
@@ -19,19 +18,22 @@
   font-size: 18px;
   // font-weight: bold;
   cursor: pointer;
-  user-select: none;
+  // user-select: none;
 
   // transition: box-shadow 1s;
-  transition: all 1s;
+  // transition: color 1s;
 
   &:hover {
-    box-shadow: 10px 5px 5px #eee;
+    box-shadow: 3px 3px 3px #eee;
   }
 
   &:active {
-    border: none;
-    transform: translate(2px,2px);
-    color: red;
+    transform: translateY(2px);
+    // transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 

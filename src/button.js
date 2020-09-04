@@ -28,9 +28,8 @@ export class Button extends Component {
    this.$el.innerText = text;
   }
 
-  click(func) {
-
-    this.$el.addEventListener('click', func);
+  click(...func) {
+    this.$el.addEventListener('click', ...func);
   }
 
   disabled() {
