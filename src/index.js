@@ -5,7 +5,22 @@ import {Counter} from './counter';
 
 import './scss/index.scss';
 import {Button} from './button';
-import mp from './zoi.mp3';
+
+import sm from './zoi.mp3';
+
+// var sound1 = document.createElement('audio');
+// sound1.src = './src/zoi.mp3';
+
+// console.log(sm);
+
+// const audioContext = new AudioContext();
+
+// const audioElement = document.querySelector('audio');
+
+// pass it into the audio context
+// const track = audioContext.createMediaElementSource(sm);
+
+// sm.connect(audioContext.destination);
 
 const counter = new Counter('#counter', {
   timer: 8,
@@ -18,8 +33,7 @@ const counter = new Counter('#counter', {
 });
 
 let sound;
-
-console.log(sound);
+let sampleBuffer;
 
 const button = new Button('#button', 'start', {});
 const circle = document.querySelector('#circle');
@@ -36,18 +50,19 @@ function start() {
     return;
   }
 
-  console.log('sourceBufferGlobal', sound);
-  sound.start(0);
-
-  button.text('stop');
-
-  counter.state.isRunning = true;
-
   const timer = document.querySelector('#timer');
   const minutes = timer.querySelector('#minutes');
   const seconds = timer.querySelector('#seconds');
-
   const deadline = Date.now() + counter.state.timer * 60 * 1000;
+
+  // setupSound();
+  setupSoundFromOsc()
+  sound.start(0);
+  animationStart();
+  counter.disable();
+
+  button.text('stop');
+  counter.state.isRunning = true;
 
   function updateClock() {
     const result = setTimeRemaining(deadline);
@@ -57,17 +72,12 @@ function start() {
     if (deadline < Date.now() || !counter.state.isRunning) {
       clearInterval(interval);
       animationStop();
+      sound.stop(0);
+
       minutes.textContent = counter.state.timer;
       seconds.textContent = '00';
     }
   }
-
-  animationStart();
-  counter.disable();
-}
-
-function con() {
-  console.log('object');
 }
 
 button.click(start);
@@ -103,9 +113,22 @@ function setTimeRemaining(deadline) {
 //Звук
 
 const context = new AudioContext();
-let loadBuffer;
 
 const url = 'https://dl.dropboxusercontent.com/s/47hgqffhjcsli6r/dinky-jam.mp3';
+const url2 = './src/om.mp3';
+
+function fetchSound(url) {
+  fetch(url)
+    .then(response => response.arrayBuffer())
+    .then(res => {
+      context.decodeAudioData(res, buffer => {
+        sampleBuffer = buffer;
+        setupSound();
+      })
+    })}
+
+// fetchSound(url)
+// fetchSound(url2);
 
 function loadSound(url) {
   let request = new XMLHttpRequest();
@@ -117,18 +140,43 @@ function loadSound(url) {
 
   request.onload = () => {
     context.decodeAudioData(request.response, buffer => {
-      loadBuffer = buffer;
+      sampleBuffer = buffer;
+      setupSound(sampleBuffer);
     });
-    setupSound();
   };
 }
 
-loadSound(url);
+function looper() {
+  s = context.createOscillator()
+  const volume = context.createGain()
+  volume.gain.value = 0;
+  volume.gain.linearRampToValueAtTime(1, context.currentTime + counter.preset[0].value/4);
+  volume.connect(context.destination);
+
+}
+
+// loadSound(url2);
+
+function setupSoundFromOsc() {
+  sound = context.createOscillator()
+  const volume = context.createGain();
+  sound.connect(volume);
+  volume.gain.value = 0;
+  volume.gain.linearRampToValueAtTime(0.4, context.currentTime + 3);
+  volume.connect(context.destination);
+}
 
 function setupSound() {
   sound = context.createBufferSource();
-  sound.buffer = loadBuffer;
-  sound.connect(context.destination);
+  sound.buffer = sampleBuffer;
+  const volume = context.createGain();
+  console.log(volume);
+  sound.connect(volume);
+  volume.gain.value = 0;
+  volume.gain.linearRampToValueAtTime(0.8, context.currentTime + 5);
+  // volume.gain.linearRampToValueAtTime(0, context.currentTime + 10);
+
+  volume.connect(context.destination);
 }
 
 // const mySample = document.querySelector('.sounfile')
@@ -180,50 +228,3 @@ function setupSound() {
 
 //   // osc2.stop(startTime + duration);
 // });
-
-// request.onload = function () {
-//   var undecodedAudio = request.response;
-
-//   console.log('response', request.response);
-
-//   context.decodeAudioData(undecodedAudio, function (buffer) {
-//     var sourceBuffer = context.createBufferSource();
-
-//     console.log('sourceBuffer', sourceBuffer);
-
-//     sourceBuffer.buffer = buffer;
-//     sourceBuffer.connect(context.destination);
-//     sourceBuffer.start(context.currentTime);
-//   });
-// };
-
-// When to start playing the oscillators
-
-// var context;
-// window.addEventListener('load', init, false);
-// function init() {
-//   try {
-//     // Fix up for prefixing
-//     window.AudioContext = window.AudioContext||window.webkitAudioContext;
-//     context = new AudioContext();
-//   }
-//   catch(e) {
-//     alert('Web Audio API is not supported in this browser');
-//   }
-// }
-
-// var dogBarkingBuffer = null;
-
-// function loadDogSound(url) {
-//   var request = new XMLHttpRequest();
-//   request.open('GET', url, true);
-//   request.responseType = 'arraybuffer';
-
-//   // Decode asynchronously
-//   request.onload = function() {
-//     context.decodeAudioData(request.response, function(buffer) {
-//       dogBarkingBuffer = buffer;
-//     });
-//   }
-//   request.send();
-// }
