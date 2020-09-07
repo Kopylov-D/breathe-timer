@@ -1,4 +1,4 @@
-const getTemplate = ({timer, preset}) => {
+const getTemplate = (timer, preset) => {
   const items = preset.map(item => {
     return `
   <li class="counter__item">
@@ -36,21 +36,20 @@ export class Counter {
     this.$el = document.querySelector(selector);
     this.options = options;
 
-    this.state = {
-      timer: options.timer,
-      preset: options.preset,
-      circleTime: 27,
-      isRunning: false
-    };
+    this.timer = options.timer;
+    this.preset = options.preset;
+    this.circleTime = 0;
+    this.isRunning = false;
 
     this.#render();
     this.#setup();
   }
 
   #render() {
-    // const {data} = this.options;
     this.$el.classList.add('counter');
-    this.$el.innerHTML = getTemplate(this.state);
+    this.$el.innerHTML = getTemplate(this.timer, this.preset);
+
+    this.setCircleTime()
 
     console.log('render');
   }
@@ -63,27 +62,22 @@ export class Counter {
 
   clickHandler(event) {
     const {type, id} = event.target.dataset;
-    const state = {...this.state};
 
     if (type === 'timeUp') {
-      state.timer += 1;
+      this.timer += 1;
     } else if (type === 'timeDown') {
-      if (state.timer !== 0) {
-        state.timer -= 1;
+      if (this.timer !== 0) {
+        this.timer -= 1;
       }
     } else if (type === 'plus') {
-      const preset = [...state.preset];
-
-      state.preset = preset.map(item => {
+      this.preset = this.preset.map(item => {
         if (item.id === id) {
           item.value += 1;
         }
         return item;
       });
     } else if (type === 'minus') {
-      const preset = [...state.preset];
-
-      state.preset = preset.map(item => {
+      this.preset = this.preset.map(item => {
         if (item.id === id && item.value > 0) {
           item.value -= 1;
         }
@@ -91,28 +85,17 @@ export class Counter {
       });
     }
 
-    this.state = state;
-    this.setCircleTime();
-
     this.#render();
-  }
-
-  get isRunning() {
-    return this.state.isRunning
-  }
-
-  toggle() {
-    // this.isRunning ? 
   }
 
   setCircleTime() {
     let circleTime = 0;
 
-    this.state.preset.forEach(item => {
+    this.preset.forEach(item => {
       circleTime += item.value;
     });
 
-    this.state.circleTime = circleTime;
+    this.circleTime = circleTime;
   }
 
   disable() {
@@ -120,7 +103,6 @@ export class Counter {
   }
   enable() {
     this.$el.addEventListener('click', this.clickHandler);
-
   }
 
   destroy() {
