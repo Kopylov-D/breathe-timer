@@ -1,63 +1,74 @@
-export const context = new AudioContext();
+import {startBtn} from './index';
 
-let background;
-let payback;
-let sampleBuffer = [];
+export const context = new AudioContext();
+export const stainTime = 1;
 
 export function startSound(preset, timer, circleTime) {
- timer = timer * 60;
- play(preset, timer, circleTime)
+  timer = timer * 60;
+  play(preset, timer, circleTime);
 }
 
 export function stopSound() {
- stop()
+  stop();
 }
 
-//звук из файла
-const url2 = './src/om.mp3';
-const url3 = './src/zoi.mp3';
+let background;
+let playback;
+let sampleBuffer = [];
 
-function fetchSound(url) {
+const url2 = './src/assets/sound/om.mp3';
+const url3 = './src/assets/sound/tibe.mp3';
+
+function fetchSound(url, type) {
   fetch(url)
     .then(response => response.arrayBuffer())
     .then(res => {
       context.decodeAudioData(res, buffer => {
-        sampleBuffer.push(buffer);
-        console.log(sampleBuffer);
+        sampleBuffer.push({type, buffer});
+        if (sampleBuffer.length > 1) {
+          startBtn();
+        }
       });
     });
 }
 
-fetchSound(url2);
-fetchSound(url3);
+fetchSound(url2, 'background');
+fetchSound(url3, 'basis');
 
 function setupBackground() {
   background = context.createBufferSource();
-  background.buffer = sampleBuffer[1];
+  sampleBuffer.map(b => {
+    if (b.type === 'background') {
+      background.buffer = b.buffer;
+    }
+  });
 
   background.loop = true;
   background.loopStart = 0;
   background.loopEnd = background.buffer.duration;
 
   const volume = context.createGain();
-  volume.gain.value = 0.2;
+  volume.gain.value = 0.1;
 
   background.connect(volume);
   volume.connect(context.destination);
 }
 
-function formPayback(preset, timer, circleTime) {
-  payback = context.createBufferSource();
-  payback.buffer = sampleBuffer[0];
+function formPlayback(preset, timer, circleTime) {
+  playback = context.createBufferSource();
+  sampleBuffer.map(b => {
+    if (b.type === 'basis') {
+      playback.buffer = b.buffer;
+    }
+  });
   let currTime = context.currentTime;
   const volume = context.createGain();
 
-  const stainTime = 0;
-  payback.loop = true;
-  payback.loopStart = 0;
-  payback.loopEnd = circleTime + stainTime;
+  playback.loop = true;
+  playback.loopStart = 0;
+  playback.loopEnd = circleTime;
 
-  payback.connect(volume);
+  playback.connect(volume);
 
   const cycles = timer / circleTime;
 
@@ -81,39 +92,12 @@ function formPayback(preset, timer, circleTime) {
 
 function play(preset, timer, circleTime) {
   setupBackground();
-  formPayback(preset, timer, circleTime);
-  payback.start(0);
+  formPlayback(preset, timer, circleTime);
+  playback.start(0);
   background.start(0);
 }
 
 function stop() {
-  payback.stop(0);
+  playback.stop(0);
   background.stop(0);
 }
-
-//Проигрывание с паузой и продолжением
-// var startOffset = 0;
-// var startTime = 0;
-// var source;
-
-// function play() {
-//   startTime = context.currentTime;
-//   source = context.createBufferSource();
-//   // Connect graph
-//   source.buffer = sampleBuffer;
-//   source.loop = true;
-//   source.connect(context.destination);
-//   // Start playback, but make sure we stay in bound of the buffer.
-//   source.start(0, startOffset % sampleBuffer.duration);
-// }
-
-// function pause() {
-//   source.stop();
-//   // Measure how much time passed since the last pause.
-//   startOffset += context.currentTime - startTime;
-// }
-
-// function stop() {
-//   source.stop();
-//   startOffset = 0;
-// }

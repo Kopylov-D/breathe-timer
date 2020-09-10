@@ -18,7 +18,7 @@ body {
 }
 
 .container {
-  background: linear-gradient(45deg, #eecfba, #c5dde8);
+  // background: linear-gradient(45deg, #eecfba, #c5dde8);
   position: absolute;
   top: 0;
   left: 0;
@@ -30,5 +30,4 @@ body {
   margin: 0 auto;
   width: $timer-width;
   height: $timer-height;
-  background: #ffff;
 }

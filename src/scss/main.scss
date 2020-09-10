@@ -15,12 +15,14 @@
 
 .dashboard {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
 }
 
 .dashboard__circle {
   position: relative;
   margin: 0 auto;
-  margin-top: 50px;
   height: 200px;
   width: 200px;
   background: radial-gradient($c-primary 0, #b2f7ef 10%, #ffffffa4 70%);
@@ -45,6 +47,19 @@
   }
 }
 
+.dashboard__command {
+  position: absolute;
+  text-transform: uppercase;
+
+  transition: transform .22s ease-in;
+  // align-self: center;
+  // align-items : center;
+
+  &::content {
+    transform: translateY(2px);
+  }
+}
+
 .counter {
   text-transform: uppercase;
   display: flex;
@@ -54,6 +69,7 @@
 
 .counter__period {
   margin: 10px;
+  margin-top: 20px;
   display: flex;
   width: 200px;
   justify-content: space-between;
@@ -62,6 +78,10 @@
 .counter__arrow {
   cursor: pointer;
   user-select: none;
+
+  &:active {
+    transform: translateY(2px);
+  }
 }
 
 .counter__list {
@@ -83,6 +103,11 @@
 
   & button {
     @include counter-btn();
+
+    &:active {
+      transform: translateY(1px);
+      outline: none;
+    }
   }
 }
 

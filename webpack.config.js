@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const copyWebpackPlugin = require('copy-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
@@ -66,14 +67,13 @@ module.exports = {
   mode: 'development', //по умолчанию
   entry: ['@babel/polyfill', './index.js'],
   output: {
-    filename: 'bundle.[hash].js',
+    filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
     extensions: ['.js'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      // '@core': path.resolve(__dirname, 'src/core'),
     },
   },
   optimization: optimization(),
@@ -92,7 +92,19 @@ module.exports = {
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'bundle.[hash].css',
+      filename: filename('css'),
+    }),
+    new copyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src/favicon.ico'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+        {
+          from: path.resolve(__dirname, 'src/assets/sound'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+      ],
     }),
   ],
   module: {
@@ -112,7 +124,6 @@ module.exports = {
       },
       {
         test: /\.mp3$/,
-        // include: SRC,
         loader: 'file-loader',
       },
       {
