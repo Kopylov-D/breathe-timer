@@ -1,7 +1,12 @@
 import {startBtn} from './index';
 
-export const context = new AudioContext();
-export const stainTime = 1;
+let context;
+
+try {
+  context = new (window.AudioContext || window.webkitAudioContext)();
+} catch (error) {
+  window.alert(`Извините, но ваш браузер не поддерживает Web Audio API!`);
+}
 
 export function startSound(preset, timer, circleTime) {
   timer = timer * 60;
@@ -16,8 +21,9 @@ let background;
 let playback;
 let sampleBuffer = [];
 
-const url2 = './src/assets/sound/om.mp3';
-const url3 = './src/assets/sound/tibe.mp3';
+const stainTime = 1;
+const backgroundUrl = './background.mp3';
+const basisUrl = './tibe.mp3';
 
 function fetchSound(url, type) {
   fetch(url)
@@ -32,8 +38,8 @@ function fetchSound(url, type) {
     });
 }
 
-fetchSound(url2, 'background');
-fetchSound(url3, 'basis');
+fetchSound(backgroundUrl, 'background');
+fetchSound(basisUrl, 'basis');
 
 function setupBackground() {
   background = context.createBufferSource();
@@ -48,7 +54,7 @@ function setupBackground() {
   background.loopEnd = background.buffer.duration;
 
   const volume = context.createGain();
-  volume.gain.value = 0.1;
+  volume.gain.value = 0.08;
 
   background.connect(volume);
   volume.connect(context.destination);

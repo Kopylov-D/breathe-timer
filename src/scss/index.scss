@@ -29,5 +29,5 @@ body {
 .timer {
   margin: 0 auto;
   width: $timer-width;
-  height: $timer-height;
+  min-height: $timer-height;
 }
