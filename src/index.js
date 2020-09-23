@@ -9,20 +9,18 @@ import '@/scss/index.scss';
 const counter = new Counter('#counter', {
   timer: 1,
   preset: [
-    {id: '1', value: 8, name: 'inhale'},
-    {id: '2', value: 8, name: 'retain'},
-    {id: '3', value: 8, name: 'exhale'},
-    {id: '4', value: 3, name: 'sustain'},
+    {id: '1', value: 8, name: 'вдох'},
+    {id: '2', value: 8, name: 'задержка'},
+    {id: '3', value: 8, name: 'выдох'},
+    {id: '4', value: 3, name: 'задержка'},
   ],
 });
 
 const menu = new Menu('#menu', {
   counterPresets: [
-    {id: '1', name: 'minutes breathe', value: '20,20,20,0'},
-    {id: '2', name: '10 breathe', value: '10,10,10,4'},
-    {id: '3', name: '4 breathe', value: '4,4,4,5'},
-    {id: '4', name: '1 test', value: '1,1,1,1'},
-    {id: '5', name: '2 test', value: '2,2,2,2'},
+    {id: '1', name: 'минутное дыхание', value: '20,20,20,0'},
+    {id: '2', name: 'дыхание 10', value: '10,10,10,4'},
+    {id: '3', name: 'дыхание 4', value: '4,4,4,4'},
   ],
 });
 
@@ -32,24 +30,24 @@ const buttonMenu = new MenuButton('#menu-btn', {
 });
 
 const buttonStart = new Button('#button', {
-  text: 'loading...',
+  text: 'загрузка...',
   className: 'button',
 });
-
-buttonStart.disable();
 
 const circle = document.querySelector('#circle');
 const commandText = document.querySelector('#command');
 
+buttonStart.disable();
 buttonMenu.click(toggleMenu);
 menu.click(loadPreset);
-buttonStart.click(start);
+buttonStart.click(toggleTimer);
+
+export function enableStartBtn() {
+  buttonStart.enable();
+  buttonStart.innerText('старт');
+}
 
 function loadPreset() {
-  if (counter.isRunning) {
-    toggleMenu();
-    return;
-  }
   let current = menu.current;
   current = current.split(',');
   counter.setPattern(current);
@@ -61,41 +59,33 @@ function toggleMenu() {
   menu.toggle();
 }
 
-export function startBtn() {
-  buttonStart.enable();
-  buttonStart.innerText('start');
-}
 
-function start() {
-  const interval = setInterval(updateClock, 1000);
+function toggleTimer() {
   const timer = document.querySelector('#timer');
   const minutes = timer.querySelector('#minutes');
   const seconds = timer.querySelector('#seconds');
 
   if (counter.isRunning) {
-    clearInterval(interval);
-    clearTimeouts();
-    stopAnimation();
-    buttonStart.innerText('start');
-    counter.enable();
-    stopSound();
-    counter.run = false;
-    commandText.innerText = '';
-    minutes.textContent = counter.timer;
-    seconds.textContent = '00';
+    stopTimer(minutes, seconds);
     return;
   }
+  startTimer(minutes, seconds)
+}
 
-  const timerValue = counter.timer * 60 * 1000;
+function startTimer(minutes, seconds) {
+  setInterval(updateClock, 1000);
+
+  const circleTime = counter.circleTime;
+  const timerValue = Math.round((counter.timer * 60) / circleTime) * circleTime * 1000;
+
   const deadline = Date.now() + timerValue;
 
   counter.run = true;
   setCommands();
-
   startSound(counter.preset, counter.timer, counter.circleTime);
   startAnimation();
   counter.disable();
-  buttonStart.innerText('stop');
+  buttonStart.innerText('стоп');
 
   function updateClock() {
     const result = setTimeRemaining(deadline);
@@ -103,18 +93,23 @@ function start() {
     seconds.textContent = result.seconds;
 
     if (deadline < Date.now() || !counter.isRunning) {
-      clearInterval(interval);
-      stopAnimation();
-      stopSound();
-      buttonStart.innerText('start');
-      counter.run = false;
-      counter.enable();
-
-      minutes.textContent = counter.timer;
-      seconds.textContent = '00';
+      stopTimer(minutes, seconds);
     }
   }
 }
+
+function stopTimer(minutes, seconds) {
+  clearTimeouts();
+  stopAnimation();
+  stopSound();
+  setCommandText('');
+  buttonStart.innerText('старт');
+  counter.enable();
+  counter.run = false;
+  minutes.textContent = counter.timer;
+  seconds.textContent = '00';
+}
+
 
 function startAnimation() {
   circle.style.cssText = `
@@ -147,7 +142,7 @@ function setTimeRemaining(deadline) {
 function setCommandText(text) {
   if (counter.isRunning) {
     commandText.innerText = text;
-  }
+  } 
 }
 
 function clearTimeouts() {
@@ -165,13 +160,13 @@ function setCommands() {
 
   function setCommands() {
     let timer = 0;
-    setTimeout(() => setCommandText('Inhale'), 0);
+    setTimeout(() => setCommandText(counter.preset[0].name), 0);
     timer = counter.preset[0].value * 1000 + 1000;
-    setTimeout(() => setCommandText('Retain'), timer);
+    setTimeout(() => setCommandText(counter.preset[1].name), timer);
     timer = timer + counter.preset[1].value * 1000 + 1000;
-    setTimeout(() => setCommandText('Exhale'), timer);
+    setTimeout(() => setCommandText(counter.preset[2].name), timer);
     timer = timer + counter.preset[2].value * 1000 + 1000;
-    setTimeout(() => setCommandText('Sustain'), timer);
+    setTimeout(() => setCommandText(counter.preset[3].name), timer);
     timer = timer + counter.preset[3].value * 1000 + 1000;
 
     if (i < numCycles && counter.isRunning) {

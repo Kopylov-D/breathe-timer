@@ -1,11 +1,11 @@
-import {startBtn} from './index';
+import {enableStartBtn} from './index';
 
 let context;
 
 try {
   context = new (window.AudioContext || window.webkitAudioContext)();
 } catch (error) {
-  window.alert(`Извините, но ваш браузер не поддерживает Web Audio API!`);
+  window.alert(`Ваш браузер не поддерживает звуковое сопровождение!`);
 }
 
 export function startSound(preset, timer, circleTime) {
@@ -23,7 +23,7 @@ let sampleBuffer = [];
 
 const stainTime = 1;
 const backgroundUrl = './background.mp3';
-const basisUrl = './tibe.mp3';
+const basisUrl = './basis.mp3';
 
 function fetchSound(url, type) {
   fetch(url)
@@ -32,7 +32,7 @@ function fetchSound(url, type) {
       context.decodeAudioData(res, buffer => {
         sampleBuffer.push({type, buffer});
         if (sampleBuffer.length > 1) {
-          startBtn();
+          enableStartBtn();
         }
       });
     });
@@ -54,7 +54,7 @@ function setupBackground() {
   background.loopEnd = background.buffer.duration;
 
   const volume = context.createGain();
-  volume.gain.value = 0.08;
+  volume.gain.value = 0.1;
 
   background.connect(volume);
   volume.connect(context.destination);
@@ -81,18 +81,17 @@ function formPlayback(preset, timer, circleTime) {
   for (let j = 0; j < cycles; j++) {
     for (let i = 0; i < preset.length; i++) {
       const duration = preset[i].value;
-      const fadeTime = duration / 3;
+      const fadeTime = duration / 4;
 
       volume.gain.linearRampToValueAtTime(0, currTime);
       volume.gain.linearRampToValueAtTime(1, currTime + fadeTime);
 
-      volume.gain.linearRampToValueAtTime(1, currTime + duration - fadeTime * 2);
+      volume.gain.linearRampToValueAtTime(1, currTime + duration - fadeTime);
       volume.gain.linearRampToValueAtTime(0, currTime + duration);
 
       currTime += duration + stainTime;
     }
   }
-
   volume.connect(context.destination);
 }
 

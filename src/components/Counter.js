@@ -12,7 +12,7 @@ const toHTML = (timer, preset, avg) => {
   `;
   });
   return `
-    <div><b>${avg}</b> breaths per minute</div>
+    <div><b>${avg}</b> вдохов в минуту</div>
     <div class="counter__period" data-type="period">
       <div class="counter__arrow material-icons" data-type="timeDown">
         expand_more
@@ -28,8 +28,7 @@ const toHTML = (timer, preset, avg) => {
     </div>
     <ul class="counter__list">
        ${items.join('')}
-    </ul> 
-   
+    </ul>  
 `;
 };
 
@@ -55,9 +54,8 @@ export class Counter {
     if (!this.$el.classList.contains('counter')) {
       this.$el.classList.add('counter');
     }
-    this.$el.innerHTML = toHTML(this.timer, this.preset, this.avgBreaths);
 
-    console.log('render');
+    this.$el.innerHTML = toHTML(this.timer, this.preset, this.avgBreaths);
   }
 
   #setup() {
@@ -130,6 +128,7 @@ export class Counter {
   disable() {
     this.$el.removeEventListener('click', this.clickHandler);
   }
+
   enable() {
     this.$el.addEventListener('click', this.clickHandler);
   }

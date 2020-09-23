@@ -4,11 +4,14 @@
   "description": "Breathe timer on pure js",
   "main": "webpack.config.js",
   "private": "true",
+  "homepage": "https://kopylov-d.github.io/breathe-timer/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development webpack --mode development",
     "build": "cross-env NODE_ENV=production webpack --mode production",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build"
   },
   "keywords": [
     "js",
@@ -32,6 +35,7 @@
     "eslint": "^7.8.0",
     "eslint-loader": "^4.0.2",
     "file-loader": "^6.1.0",
+    "gh-pages": "^3.1.0",
     "html-webpack-plugin": "^4.4.1",
     "mini-css-extract-plugin": "^0.11.0",
     "node-sass": "^4.14.1",

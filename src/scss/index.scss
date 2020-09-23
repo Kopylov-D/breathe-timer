@@ -13,12 +13,12 @@
 }
 
 body {
- font-family: 'Scada', sans-serif;
- font-size: 16px;
+  font-family: 'Scada', sans-serif;
+  font-size: 16px;
+  background: linear-gradient(45deg, #eecfba, #c5dde8);
 }
 
 .container {
-  // background: linear-gradient(45deg, #eecfba, #c5dde8);
   position: absolute;
   top: 0;
   left: 0;
@@ -27,7 +27,12 @@ body {
 }
 
 .timer {
+  background: #ffffff;
   margin: 0 auto;
   width: $timer-width;
-  min-height: $timer-height;
+  display: flex;
+  flex-direction: column;
+  max-width: 2 * $timer-width;
+  min-height: inherit;
+  bottom: 0;
 }

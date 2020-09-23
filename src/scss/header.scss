@@ -7,6 +7,7 @@
   right: 0;
   left: 0;
   height: $header-height;
+  max-width: 2 * $timer-width;
 }
 
 .header__menu-btn {
@@ -90,6 +91,7 @@
   box-sizing: border-box;
   transform: translateY(-800px);
   transition: transform 0.2s ease-in;
+
   &.open {
     transform: translateY(0);
     display: block;

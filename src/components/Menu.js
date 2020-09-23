@@ -7,7 +7,7 @@ const toHTML = presets => {
   });
 
   return `
-    <h3>Breathing patterns</h3>
+    <h3>паттерны дыхания</h3>
     <ul class="header__list">
       ${items.join('')}
     </ul>
