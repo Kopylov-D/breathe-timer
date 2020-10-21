@@ -11,4 +11,4 @@
 * Webpack
 
 ## Демонстрация: 
-[![Демонстрация](https://s7.gifyu.com/images/budget-app-2.gif)](https://gifyu.com/image/cNBU)
+![timer.gif](https://s8.gifyu.com/images/timer.gif)
