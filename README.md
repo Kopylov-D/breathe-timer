@@ -11,4 +11,4 @@
 * Webpack
 
 ## Демонстрация: 
-![timer.gif](https://s8.gifyu.com/images/timer.gif)
+[![timer6216e22c6cf7a561.gif](https://s8.gifyu.com/images/timer6216e22c6cf7a561.gif)](https://gifyu.com/image/8Q3R)
